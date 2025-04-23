@@ -72,6 +72,13 @@
         - { regexp: "user = apache", replace: "user = nginx" }
         - { regexp: "group = apache", replace: "group = nginx" }
 
+    - name: chown
+      file:
+        path: "/usr/share/nginx"
+        owner: nginx
+        group: nginx
+        recurse: yes
+
     - name: start nginx
       systemd:
         name: nginx
