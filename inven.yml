@@ -1,0 +1,30 @@
+---
+- name: create inventory file
+  hosts: localhost
+  gather_facts: false
+  ignore_errors: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+  tasks:
+    - name: inventory
+      blockinfile:
+        path: /etc/ansible/hosts
+        create: yes
+        block: |
+          [controller]
+          10.0.0.4
+
+          [hosts]
+          10.0.2.0/24
+          10.0.3.0/24
+          10.0.5.0/24
+
+          [web1]
+          10.0.2.0/24
+
+          [web2]
+          10.0.3.0/24
+
+          [autosc]
+          10.0.5.0/24

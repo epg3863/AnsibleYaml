@@ -1,6 +1,6 @@
 ---
 - name: install nginx wordpress
-  hosts: web
+  hosts: web2
   gather_facts: false
   ignore_errors: true
   vars:

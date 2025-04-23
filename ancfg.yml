@@ -1,0 +1,15 @@
+---
+- name: edit ansible.cfg
+  hosts: localhost
+  gather_facts: false
+  ignore_errors: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+  tasks:
+    - name: edit ansible.cfg
+      blockinfile:
+        path: /etc/ansible/ansible.cfg
+        block: |
+          [defaults]
+          host_key_checking = False
