@@ -1,0 +1,61 @@
+---
+- name: install httpd wordpress
+  hosts: web
+  gather_facts: false
+  ignore_errors: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+  tasks:
+    - name: install packages
+      dnf:
+        name:
+          - httpd
+          - wget
+          - tar
+          - php
+          - php-curl
+          - php-cli
+          - php-mysqlnd
+          - php-gd
+          - php-opcache
+        state: latest
+
+    - name: wordpress file download
+      get_url:
+        url: https://ko.wordpress.org/wordpress-6.8-ko_KR.tar.gz
+        dest: "./"
+
+    - name: unarchive wordpress
+      unarchive:
+        src: "./wordpress-6.8-ko_KR.tar.gz"
+        remote_src: yes
+        dest: "./"
+
+    - name: copy ./wordpress /var/www/html
+      copy:
+        src: "/root/wordpress/"
+        remote_src: yes
+        dest: "/var/www/html"
+
+    - name: copy wp-config-sample.php wp-config.php
+      copy:
+        src: "/var/www/html/wp-config-sample.php"
+        remote_src: yes
+        dest: "/var/www/html/wp-config.php"
+
+    - name: replace wp-config.php
+      replace:
+        path: "/var/www/html/wp-config.php"
+        regexp: "{{ item.regexp }}"
+        replace: "{{ item.replace }}"
+      with_items:
+        - { regexp: database_name_here, replace: wordpress }
+        - { regexp: username_here, replace: root }
+        - { regexp: password_here, replace: It12345! }
+        - { regexp: localhost, replace: 192.168.25.101 }
+
+    - name: start httpd
+      systemd:
+        name: httpd
+        state: started

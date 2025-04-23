@@ -1,0 +1,78 @@
+---
+- name: install nginx wordpress
+  hosts: web
+  gather_facts: false
+  ignore_errors: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+  tasks:
+    - name: install packages
+      dnf:
+        name:
+          - nginx
+          - wget
+          - tar
+          - php
+          - php-fpm
+          - php-curl
+          - php-cli
+          - php-mysqlnd
+          - php-gd
+          - php-opcache
+        state: latest
+
+    - name: wordpress file download
+      get_url:
+        url: https://ko.wordpress.org/wordpress-6.8-ko_KR.tar.gz
+        dest: "./"
+
+    - name: unarchive wordpress
+      unarchive:
+        src: "./wordpress-6.8-ko_KR.tar.gz"
+        remote_src: yes
+        dest: "./"
+
+    - name: copy ./wordpress /usr/share/nginx/html
+      copy:
+        src: "/root/wordpress/"
+        remote_src: yes
+        dest: "/usr/share/nginx/html"
+
+    - name: copy wp-config-sample.php wp-config.php
+      copy:
+        src: "/usr/share/nginx/html/wp-config-sample.php"
+        remote_src: yes
+        dest: "/usr/share/nginx/html/wp-config.php"
+
+    - name: replace wp-config.php
+      replace:
+        path: "/usr/share/nginx/html/wp-config.php"
+        regexp: "{{ item.regexp }}"
+        replace: "{{ item.replace }}"
+      with_items:
+        - { regexp: database_name_here, replace: wordpress }
+        - { regexp: username_here, replace: root }
+        - { regexp: password_here, replace: It12345! }
+        - { regexp: localhost, replace: 192.168.25.101 }
+
+    - name: firewall
+      firewalld:
+        port: 80/tcp
+        permanent: yes
+        immediate: yes
+        state: enabled
+
+    - name: replace config
+      replace:
+        path: /etc/php-fpm.d/www.conf
+        regexp: "{{ item.regexp }}"
+        replace: "{{ item.replace }}"
+      with_items:
+        - { regexp: "user = apache", replace: "user = nginx" }
+        - { regexp: "group = apache", replace: "group = nginx" }
+
+    - name: start nginx
+      systemd:
+        name: nginx
+        state: started
