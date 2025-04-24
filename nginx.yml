@@ -40,7 +40,7 @@
 
     - name: copy ./wordpress /usr/share/nginx/html
       copy:
-        src: "/root/wordpress/"
+        src: "./wordpress/"
         remote_src: yes
         dest: "/usr/share/nginx/html"
 

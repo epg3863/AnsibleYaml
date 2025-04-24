@@ -12,7 +12,7 @@
         path: /etc/ansible/ansible.cfg
         block: |
           [defaults]
-          remote_user = azureuser
+          remote_user = team1
           private_key_file = ~/.ssh/id_rsa
           host_key_checking = False
 
