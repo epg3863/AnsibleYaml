@@ -7,6 +7,11 @@
     ansible_python_interpreter: /usr/bin/python3
 
   tasks:
+    - name: disable selinux
+      selinux:
+        state: disabled
+        update_kernel_param: true
+
     - name: install packages
       dnf:
         name:
@@ -34,7 +39,7 @@
 
     - name: copy ./wordpress /var/www/html
       copy:
-        src: "/root/wordpress/"
+        src: "./wordpress/"
         remote_src: yes
         dest: "/var/www/html"
 
