@@ -61,13 +61,6 @@
         - { regexp: password_here, replace: It12345! }
         - { regexp: localhost, replace: 192.168.25.101 }
 
-    - name: firewall
-      firewalld:
-        port: 80/tcp
-        permanent: yes
-        immediate: yes
-        state: enabled
-
     - name: replace config
       replace:
         path: /etc/php-fpm.d/www.conf
