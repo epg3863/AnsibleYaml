@@ -60,6 +60,10 @@
         - { regexp: password_here, replace: It12345! }
         - { regexp: localhost, replace: 192.168.25.101 }
 
+    - name: create health.html
+      blockinfile:
+        path: "/var/www/html/health.html"
+
     - name: chown
       file:
         path: "/var/www"
@@ -71,3 +75,4 @@
       systemd:
         name: httpd
         state: started
+        enabled: yes
