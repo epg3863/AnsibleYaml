@@ -63,6 +63,9 @@
     - name: create health.html
       blockinfile:
         path: "/var/www/html/health.html"
+        create: yes
+        block: |
+          <h1>health-checkpage-apache-web1</h1>
 
     - name: chown
       file:

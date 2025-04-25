@@ -70,6 +70,13 @@
         - { regexp: "user = apache", replace: "user = nginx" }
         - { regexp: "group = apache", replace: "group = nginx" }
 
+    - name: create health.html
+      blockinfile:
+        path: "/usr/share/nginx/html/health.html"
+        create: yes
+        block: |
+          <h1>health-checkpage-nginx-web2</h1>
+
     - name: chown
       file:
         path: "/usr/share/nginx"
