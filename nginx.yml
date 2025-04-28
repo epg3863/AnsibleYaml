@@ -74,6 +74,7 @@
       blockinfile:
         path: "/usr/share/nginx/html/health.html"
         create: yes
+        markjer: ""
         block: |
           <h1>health-checkpage-nginx-web2</h1>
 

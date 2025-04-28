@@ -64,6 +64,7 @@
       blockinfile:
         path: "/var/www/html/health.html"
         create: yes
+        marker: ""
         block: |
           <h1>health-checkpage-apache-web1</h1>
 
