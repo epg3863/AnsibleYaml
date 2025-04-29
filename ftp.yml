@@ -1,0 +1,88 @@
+---
+- name: install vsftpd
+  hosts: ftp
+  gather_facts: false
+  ignore_errors: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+  tasks:
+    - name: disable selinux
+      selinux:
+        state: disabled
+        update_kernel_param: true
+
+    - name: install packages
+      dnf:
+        name:
+          - vsftpd
+        state: latest
+
+    - name: create user team1a, team1b
+      user:
+        name: "{{ item }}"
+        password: "{{ 'PvEL@foijvbe!' | password_hash('sha512') }}"
+      loop:
+        - team1a
+        - team1b
+
+    - name: create directory n configfiles
+      file:
+        path: /ftp
+        state: directory
+
+    - name: create banner file
+      blockinfile:
+        path: /ftp/ban
+        state: present
+        marker: ""
+        create: yes
+        block: |
+          ===========================
+                    WARNING!
+                  Saving Logs!
+          ===========================
+
+    - name: create chroot file
+      blockinfile:
+        path: /ftp/chroot
+        state: present
+        marker: ""
+        create: yes
+        block: |
+          team1a
+          team1b
+
+    - name: write vsftpd.conf
+      blockinfile:
+        path: /ftp/vsftpd.conf
+        create: yes
+        marker: ""
+        block: |
+          anonymous_enable=NO
+          local_enable=YES
+          write_enable=NO
+          local_umask=022
+          dirmessage_enable=YES
+          xferlog_enable=YES
+          xferlog_file=/var/log/xferlog
+          xferlog_std_format=YES
+          idle_session_timeout=120
+          data_connection_timeout=60
+          banner_file=/ftp/ban
+          chroot_list_enable=YES
+          chroot_list_file=/ftp/chroot
+          listen=NO
+          listen_ipv6=NO
+          pam_service_name=vsftpd
+          userlist_enable=YES
+          allow_writeable_chroot=YES
+          pasv_enable=YES
+          pasv_min_port=65001
+          pasv_max_port=65010
+
+    - name: start vsftpd
+      systemd:
+        name: vsftpd
+        state: started
+        enabled: yes

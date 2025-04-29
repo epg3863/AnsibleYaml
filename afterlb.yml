@@ -1,0 +1,20 @@
+---
+- name: install vsftpd
+  hosts: ftp
+  gather_facts: false
+  ignore_errors: true
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+
+  tasks:
+    - name: add pasv pip
+      lineinfile:
+        path: /etc/vsftpd/vsftpd.conf
+        line: "pasv_address={{ lb_pip }}"
+      environment:
+        lb_pip: "{{ lookup.('env', 'lb_pip') }}"
+
+    - name: start vsftpd
+      systemd:
+        name: vsftpd
+        state: restarted
