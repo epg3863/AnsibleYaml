@@ -72,7 +72,7 @@
           banner_file=/ftp/ban
           chroot_list_enable=YES
           chroot_list_file=/ftp/chroot
-          listen=NO
+          listen=YES
           listen_ipv6=NO
           pam_service_name=vsftpd
           userlist_enable=YES
@@ -80,6 +80,12 @@
           pasv_enable=YES
           pasv_min_port=65001
           pasv_max_port=65010
+
+    - name: copy vsftpd.conf
+      copy:
+        src: "/ftp/vsftpd.conf"
+        remote_src: yes
+        dest: "/etc/vsfptd/vsftpd.conf"
 
     - name: start vsftpd
       systemd:
