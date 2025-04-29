@@ -12,7 +12,7 @@
         path: /etc/vsftpd/vsftpd.conf
         line: "pasv_address={{ lb_pip }}"
       environment:
-        lb_pip: "{{ lookup.('env', 'lb_pip') }}"
+        lb_pip: "{{ lookup('env', 'lb_pip') }}"
 
     - name: start vsftpd
       systemd:
