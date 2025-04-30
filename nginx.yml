@@ -57,7 +57,7 @@
         replace: "{{ item.replace }}"
       with_items:
         - { regexp: database_name_here, replace: wordpress }
-        - { regexp: username_here, replace: root }
+        - { regexp: username_here, replace: team1 }
         - { regexp: password_here, replace: It12345! }
         - { regexp: localhost, replace: team1.private.mysql.database.azure.com }
 
